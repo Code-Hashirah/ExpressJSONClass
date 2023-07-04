@@ -2,6 +2,7 @@ const router = require('express').Router()
 const path = require('path')
 const fs = require('fs')
 const dataLocation =path.join(__dirname, '..', 'Data','products.json')
+const adminControler=require('../controllers/admin')
 // let products=[]
 router.get('/products', (req, res, next)=>{
   fs.readFile(dataLocation, (err, info)=>{
@@ -11,29 +12,8 @@ router.get('/products', (req, res, next)=>{
    //   res.sendFile(path.join(__dirname, '../', 'views', 'products.html'));
  
 })
-router.get('/add-products', (req, res, next)=>{
-  res.render('addProduct',{title:"Add products"})
-  })
-router.post('/add-product', (req, res, next)=>{
-let newProduct=req.body;
-fs.readFile(dataLocation,(err,data)=>{
-  if(!err){
-    let prod=[]
-   prod= JSON.parse(data)
-   newProduct.id=prod.length;
-    prod.push(newProduct)
-    fs.writeFile(dataLocation,JSON.stringify(prod), (err=>{
-      if(err) throw "Failed to save"
-      res.redirect('/products')
-    }))
-  }
-})
-    // let title = req.body.title
-    // let img = req.body.image
-    // console.log(title, img)
-    // products.push(req.body)
-
-} )
+router.get('/add-product',adminControler.addProdPage )
+router.post('/add-product',adminControler.addProducts )
 
 router.post('/delete-product',(req,res)=>{
 
@@ -51,4 +31,44 @@ router.post('/delete-product',(req,res)=>{
   })
 
 })
+
+// update product
+router.get('/update-product/:id',(req, res)=>{
+    let prodId=req.params.id;
+    fs.readFile(dataLocation,(err,data)=>{
+      let proData=JSON.parse(data)
+      let update=proData.filter((value)=>{
+        return value.id == prodId
+      })
+      // console.log(update)
+      res.render('updateProduct',{title:"Update Product", Product:update})
+    })
+})
+
+router.post('/update-product', (req,res)=>{
+  let newData=req.body;
+  // console.log(newData.id)
+  fs.readFile(dataLocation,(err, update)=>{
+    let proData=JSON.parse(update)
+    let newUpdate=[];
+    for(let i=0; i < proData.length; i++){
+      if(proData[i].id==newData.id){
+        newUpdate[i]=newData
+      }
+      else{
+        newUpdate[i]=proData[i]
+        // console.log(newUpdate)
+      }
+    }
+    // writing to Json 
+    fs.writeFile(dataLocation,JSON.stringify(newUpdate),(err)=>{
+      if(err) throw err
+    })
+    res.redirect('/products')
+  })
+})
+
+
+
+
 module.exports=router

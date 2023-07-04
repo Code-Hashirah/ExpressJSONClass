@@ -26,7 +26,7 @@
         <nav>
             <li><a href="/">Home</a></li>
             <li><a href="/products"> Products</a></li>
-            <li><a href="/add-products"> Add Product</a></li>
+            <li><a href="/add-product"> Add Product</a></li>
         </nav>
     </header>
     <%   
@@ -43,6 +43,7 @@
         2334.556
     </p>
 </div>
+<a href="/update-product/<%= value.id %>">Update</a>
 <form action="/delete-product" method="post">
     <input type="hidden" name="prodId" value="<%=value.id%>">
     <button type="submit">Delete</button>
