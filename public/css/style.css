@@ -1,0 +1,16 @@
+header{
+    display: flex;
+
+}
+nav{
+    display: flex;
+}
+li{
+    list-style-type: none;
+    padding:16px;
+    /* background-color:green; */
+}
+li a{
+    text-decoration: none;
+    color: black
+}
